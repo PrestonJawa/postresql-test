@@ -1,12 +1,17 @@
-exports.homeGet = (req, res) => {
-    console.log("usernames will be logged here - wip")
+const db = require('../db/queries')
+
+exports.homeGet = async (req, res) => {
+  const usernames = await db.getAllUsernames();
+  console.log("Usernames: ", usernames);
+  res.send("Usernames: " + usernames.map(user => user.username).join(", "));
 }
 
 exports.newGet = (req, res) => {
-    const user = 'tomtom'
-    res.render('new', {user: user})
+    res.render('new')
 }
 
-exports.newPost = (req, res) => {
-    console.log("username to be saved: ", req.body.username)
+exports.newPost = async (req, res) => {
+    const { username } = req.body;
+    await db.insertUsername(username);
+    res.redirect("/");
 }
